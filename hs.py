@@ -14,7 +14,7 @@ class HiddenService(object):
     """Hidden service information are kept here. Not much more"""
     def __init__(self, hsdir, onionport, address):
         self.hsdir = hsdir
-        self.onionport = onionport
+        self.onionport = int(onionport)
         self.address = address
         self.onion = get_onion_host_by_dir(hsdir)
 
@@ -44,7 +44,6 @@ def get_hidden_services():
             return
         for i in xrange(0, len(opt)-1, 2):
             opt_dict = dict((k, v) for (k, v) in opt[i:i+2])
-            print 'opt group', opt_dict
             yield HiddenService(opt_dict['HiddenServiceDir'],
                     *opt_dict['HiddenServicePort'].split())
 
