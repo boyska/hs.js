@@ -14,16 +14,15 @@ def hs_list(args):
     """List active hidden services as
     $url.onion:78\t$host:port\t/da/ta/dir
     """
-    out_buffer.write('\n'.join(
-        ('%s:%d\t%s\t%s' %
+    for hs in get_hidden_services():
+	print '%s:%d\t%s\t%s' % \
             (hs.onion, hs.onionport, hs.address, hs.hsdir)
-            for hs in get_hidden_services())))
 
 def hs_add(args):
     """Add a hidden service"""
-    onionport = 12345
-    port = 23456
-    add_hidden_service(hsdir='/var/lib/tor/testhey_hs',
+    onionport = int(args.onionport)
+    port = int(args.localport)
+    add_hidden_service(hsdir='/var/lib/tor/testhey%d_hs' % port,
             onionport=onionport, port=port)
 def hs_rm(args):
     """Remove a hidden service"""
@@ -39,6 +38,8 @@ def parse_and_run(system_arguments):
             help='list active hidden services')
     parser_ls.set_defaults(func=hs_list)
     parser_add = subparsers.add_parser('add', help='add a hidden service')
+    parser_add.add_argument("onionport", help='the port that will be exposed publicly')
+    parser_add.add_argument("localport", help='the port the hiddenservice will connect to')
     parser_add.set_defaults(func=hs_add)
     parser_rm = subparsers.add_parser('rm', help='remove a hidden service')
     parser_rm.set_defaults(func=hs_rm)
